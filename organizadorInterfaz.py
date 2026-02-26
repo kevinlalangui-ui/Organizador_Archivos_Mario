@@ -11,6 +11,27 @@ import tkinter as tk
 from tkinter import messagebox
 
 
+def restaurar_respaldo():
+    ruta = entry_ruta.get()
+
+    if not os.path.exists("respaldo.zip"):
+        messagebox.showerror("Error", "No existe un respaldo para restaurar")
+        return
+
+    try:
+        for archivo in os.listdir(ruta):
+            rutaArchivo = os.path.join(ruta, archivo)
+            if os.path.isfile(rutaArchivo):
+                os.remove(rutaArchivo)
+            else:
+                shutil.rmtree(rutaArchivo)
+
+        shutil.unpack_archive("respaldo.zip", ruta)
+        messagebox.showinfo("Restauración", "Archivos restaurados correctamente")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo restaurar: {e}")
+
 
 def organizar_archivos():
     ruta = entry_ruta.get()
@@ -35,7 +56,7 @@ def organizar_archivos():
     except:
         messagebox.showerror("Error", "No se pudo crear la copia de seguridad")
         return
-
+//falta poner carpeta de destino
 
 ventana = tk.Tk()
 ventana.title("Organizador de Archivos")
@@ -48,6 +69,9 @@ entry_ruta.pack()
 tk.Label(ventana, text="Extensión (ej: .jpg):").pack()
 entry_extension = tk.Entry(ventana, width=20)
 entry_extension.pack()
+
+//Falta boton de organizar
+tk.Button(ventana, text="Restaurar respaldo", command=restaurar_respaldo).pack()
 
 
 
