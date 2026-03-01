@@ -1,6 +1,7 @@
 import os
 import shutil
 from tkinter import messagebox
+import winshell # NECESARIO PARA LA PAPELERA
 
 # Lee el valor del checkbox.
 # True = campos en disabled
@@ -116,3 +117,28 @@ def organizar_archivos(auto_var, entry_ruta, entry_extension, entry_destino):
         messagebox.showinfo("Completado", f"{len(archivos)} archivos movidos correctamente")
     else:
         messagebox.showinfo("Aviso", "No se indicó carpeta destino :(")
+
+
+def recuperar_de_papelera(entry_archivo_papelera):
+    nombre_archivo = entry_archivo_papelera.get()
+
+    if not nombre_archivo:
+        messagebox.showwarning("Aviso", "Ingresa el nombre del archivo a buscar en la papelera.")
+        return
+
+    try:
+        papelera = list(winshell.recycle_bin())
+        encontrado = False
+
+        for item in papelera:
+            if os.path.basename(item.original_filename()) == nombre_archivo:
+                winshell.undelete(item.original_filename())
+                encontrado = True
+                messagebox.showinfo("Éxito", f"'{nombre_archivo}' fue restaurado por Windows a su carpeta original.")
+                break
+
+        if not encontrado:
+            messagebox.showinfo("Aviso", f"No se encontró '{nombre_archivo}' en la Papelera de Windows.")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Error al acceder a la papelera: {e}")
