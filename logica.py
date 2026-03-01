@@ -1,21 +1,12 @@
-"""
-Autores:
-    - Samantha Parra
-    - Kevin Lalangui
-Descripción: Organizador de archivos con interfaz gráfica
-"""
-
 import os
 import shutil
-import tkinter as tk
 from tkinter import messagebox
-
 
 # Lee el valor del checkbox.
 # True = campos en disabled
 # False = campos en normal
-def estado_campos():
-    if auto.get():
+def estado_campos(auto_var, entry_extension, entry_destino):
+    if auto_var.get():
         entry_extension.config(state="disabled")
         entry_destino.config(state="disabled")
     else:
@@ -23,7 +14,7 @@ def estado_campos():
         entry_destino.config(state="normal")
 
 # En caso de que no existe un zip de respaldo, borra todo el contenido y extrae el zip
-def restaurar_respaldo():
+def restaurar_respaldo(entry_ruta):
     ruta = entry_ruta.get()
 
     if not os.path.exists("respaldo.zip"):
@@ -48,8 +39,8 @@ def restaurar_respaldo():
 # Hace una copia de seguridad en un zip.
 # Modo Auto On: clasifica todos los archivos en carpetas según su extensión
 # Modo Auto Off: mueve los archivos según la extensión que escriba el usuario
-def organizar_archivos():
-    modoAuto = auto.get()
+def organizar_archivos(auto_var, entry_ruta, entry_extension, entry_destino):
+    modoAuto = auto_var.get()
     ruta = entry_ruta.get()
     ext = entry_extension.get()
     carpetaDestino = entry_destino.get()
@@ -111,8 +102,6 @@ def organizar_archivos():
         messagebox.showerror("Error", "No se pudo crear la copia de seguridad")
         return
 
-
-
     if carpetaDestino != "":
         destino = os.path.join(ruta, carpetaDestino)
 
@@ -127,34 +116,3 @@ def organizar_archivos():
         messagebox.showinfo("Completado", f"{len(archivos)} archivos movidos correctamente")
     else:
         messagebox.showinfo("Aviso", "No se indicó carpeta destino :(")
-
-# VENTANA, CAMPOS, BOTONES
-ventana = tk.Tk()
-ventana.title("Organizador de Archivos")
-ventana.geometry("400x250")
-auto = tk.BooleanVar(value=False)
-
-tk.Label(ventana, text="Ruta de la carpeta:").pack()
-entry_ruta = tk.Entry(ventana, width=50)
-entry_ruta.pack()
-
-tk.Label(ventana, text="Extensión (ej: .jpg):").pack()
-entry_extension = tk.Entry(ventana, width=20)
-entry_extension.pack()
-
-# su checkbox de auto
-checkbox_auto = tk.Checkbutton(ventana, text="Auto", variable=auto, command=estado_campos)
-checkbox_auto.pack(pady=5)
-
-tk.Label(ventana, text="Carpeta destino (opcional):").pack()
-entry_destino = tk.Entry(ventana, width=30)
-entry_destino.pack()
-
-tk.Button(ventana, text="Organizar", command=organizar_archivos).pack(pady=15)
-tk.Button(ventana, text="Restaurar respaldo", command=restaurar_respaldo).pack()
-
-
-
-estado_campos()
-ventana.mainloop()
-# mainloop mantiene la ventana abierta
