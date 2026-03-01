@@ -1,5 +1,5 @@
 import tkinter as tk
-from logica import estado_campos, organizar_archivos, restaurar_respaldo
+from logica import estado_campos, organizar_archivos, restaurar_respaldo,recuperar_de_papelera
 
 
 def iniciar_interfaz():
@@ -31,6 +31,14 @@ def iniciar_interfaz():
 
     tk.Button(ventana, text="Restaurar respaldo",
               command=lambda: restaurar_respaldo(entry_ruta)).pack()
+
+#papelera
+    tk.Label(ventana, text="Archivo a recuperar de la papelera:").pack(pady=(10, 0))
+    entry_archivo_papelera = tk.Entry(ventana, width=30)
+    entry_archivo_papelera.pack()
+
+    tk.Button(ventana, text="Recuperar de Papelera",
+              command=lambda: recuperar_de_papelera(entry_archivo_papelera)).pack(pady=5)
 
     estado_campos(auto, entry_extension, entry_destino)
     ventana.mainloop()
